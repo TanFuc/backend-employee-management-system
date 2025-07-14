@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<UserDTO> getUsersByCompany(Long companyId) {
-		List<UserEntity> users = userRepository.findByCompanies_Id(companyId);
+		List<UserEntity> users = userRepository.findUsersByCompanyId(companyId);
 		return users.stream().map(UserMapper::toDTO).toList();
 	}
 }
