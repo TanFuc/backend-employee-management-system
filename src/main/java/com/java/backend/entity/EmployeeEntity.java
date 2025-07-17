@@ -58,6 +58,10 @@ public class EmployeeEntity {
     private String address;
     
     @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+    
+    @ManyToOne
     @JoinColumn(name = "company_id")
     private CompanyEntity company;
     
