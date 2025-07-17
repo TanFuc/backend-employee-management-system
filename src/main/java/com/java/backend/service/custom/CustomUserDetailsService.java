@@ -30,24 +30,24 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		UserEntity user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng!"));
+		UserEntity user = userRepository.findWithRolesAndPermissionsByUsername(username)
+		        .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng!"));
 
-		Set<GrantedAuthority> authorities = new HashSet<>();
+	    Set<GrantedAuthority> authorities = new HashSet<>();
 
-		for (UserRoleEntity userRole : user.getUserRoles()) {
-			authorities.add(new SimpleGrantedAuthority("ROLE_" + userRole.getRole().getName()));
+	    for (UserRoleEntity userRole : user.getUserRoles()) {
+	        authorities.add(new SimpleGrantedAuthority("ROLE_" + userRole.getRole().getName()));
 
-			List<RolePermissionEntity> rolePermissions = userRole.getRole().getRolePermissions();
-			if (rolePermissions != null) {
-				for (RolePermissionEntity rp : rolePermissions) {
-					String permissionName = rp.getPermission().getName();
-					authorities.add(new SimpleGrantedAuthority(permissionName));
-				}
-			}
-		}
+	        List<RolePermissionEntity> rolePermissions = userRole.getRole().getRolePermissions();
+	        if (rolePermissions != null) {
+	            for (RolePermissionEntity rp : rolePermissions) {
+	                String permissionName = rp.getPermission().getName();
+	                authorities.add(new SimpleGrantedAuthority(permissionName));
+	            }
+	        }
+	    }
 
-		return new User(user.getUsername(), user.getPassword(), authorities);
+	    return new User(user.getUsername(), user.getPassword(), authorities);
 	}
 
 }
