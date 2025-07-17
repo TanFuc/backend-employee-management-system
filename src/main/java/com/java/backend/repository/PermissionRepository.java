@@ -8,4 +8,5 @@ import com.java.backend.entity.PermissionEntity;
 
 public interface PermissionRepository extends JpaRepository<PermissionEntity, Long> {
     Optional<PermissionEntity> findByName(String name);
+    Optional<PermissionEntity> findByCode(String code);
 }
