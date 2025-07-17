@@ -33,7 +33,7 @@ public class UserController {
 	private com.java.backend.dto.request.CurrentRequestContext requestContext;
 
 	@GetMapping
-	@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+	@PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER')")
 	public ResponseEntity<List<UserDTO>> getAllUsers() {
 		Long companyId = requestContext.getCompanyId();
 		return ResponseEntity.ok(userService.getUsersByCompany(companyId));
