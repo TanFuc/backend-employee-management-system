@@ -25,7 +25,7 @@
 <repositories>
   <repository>
     <id>central</id>
-    <url>http://repo1.maven.org/maven2</url>
+    <url>https://repo1.maven.org/maven2</url>
   </repository>
 </repositories>
 
@@ -72,6 +72,12 @@
       <artifactId>spring-security-test</artifactId>
       <scope>test</scope>
     </dependency>
+
+<dependency>
+  <groupId>me.paulschwarz</groupId>
+  <artifactId>spring-dotenv</artifactId>
+  <version>2.2.0</version>
+</dependency>
 
 <dependency>
   <groupId>io.jsonwebtoken</groupId>
