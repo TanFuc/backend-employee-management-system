@@ -57,6 +57,9 @@ public class UserServiceImpl implements UserService {
 		user.setActive(true);
 		user = userRepository.save(user);
 
+		CompanyEntity company = companyRepository.findById(companyId)
+				.orElseThrow(() -> new RuntimeException("Không tìm thấy công ty"));
+
 		for (String roleName : dto.getRoles()) {
 			RoleEntity role = roleRepository.findByName(roleName)
 					.orElseThrow(() -> new RuntimeException("Không tìm thấy vai trò: " + roleName));
@@ -64,11 +67,9 @@ public class UserServiceImpl implements UserService {
 			UserRoleEntity userRole = new UserRoleEntity();
 			userRole.setUser(user);
 			userRole.setRole(role);
+			userRole.setCompany(company);
 			userRoleRepository.save(userRole);
 		}
-
-		CompanyEntity company = companyRepository.findById(companyId)
-				.orElseThrow(() -> new RuntimeException("Không tìm thấy công ty"));
 
 		UserCompanyEntity userCompany = new UserCompanyEntity();
 		userCompany.setUser(user);
@@ -99,5 +100,27 @@ public class UserServiceImpl implements UserService {
 	public List<UserDTO> getUsersByCompany(Long companyId) {
 		List<UserEntity> users = userRepository.findUsersByCompanyId(companyId);
 		return users.stream().map(UserMapper::toDTO).toList();
+	}
+	
+	@Override
+	public void addStaffRoleIfNeeded(UserEntity user, Long companyId) {
+	    boolean alreadyStaff = user.getUserRoles().stream()
+	        .anyMatch(ur -> ur.getRole().getName().equalsIgnoreCase("STAFF")
+	                    && ur.getCompany().getId().equals(companyId));
+
+	    if (!alreadyStaff) {
+	        RoleEntity staffRole = roleRepository.findByName("STAFF")
+	                .orElseThrow(() -> new RuntimeException("STAFF role not found"));
+
+	        CompanyEntity company = companyRepository.findById(companyId)
+	                .orElseThrow(() -> new RuntimeException("Company not found"));
+
+	        UserRoleEntity userRole = new UserRoleEntity();
+	        userRole.setUser(user);
+	        userRole.setRole(staffRole);
+	        userRole.setCompany(company);
+
+	        userRoleRepository.save(userRole);
+	    }
 	}
 }
